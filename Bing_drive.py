@@ -1,50 +1,54 @@
-import customtkinter as CTk
-def button_callback():
-    print("button pressed")
+# Logout button
+        ttk.Button(self.root, text="Logout", command=self.logout).grid(row=7, column=0, columnspan=2, pady=10)
 
-app = CTk.CTk()
-app.title("BingDrive")
-app.geometry("800x600")
-app._set_appearance_mode("light")
+    def calculate_cost_and_time(self):
+        start_point = self.selected_start_point.get()
+        destination = self.destination_entry.get()
 
+        route = self.find_route(start_point, destination)
 
-welcome_label = CTk.CTkLabel(app, text="WELCOME TO BINGDRIVE",
-                             fg_color=("white","black"),
-                             font=("Helvetica", 24),
-                             text_color=("black", "white"))
-welcome_label.pack(pady=20)
+        if route:
+            cost_label = ttk.Label(self.root, text=f"Cost: ${route.cost:.2f}")
+            cost_label.grid(row=8, column=0, columnspan=2, pady=5)
 
-login_button = CTk.CTkButton(app, text="LOGIN",
-                             command=button_callback,
-                             corner_radius=32,
-                             fg_color=("#C850C0","black"),
-                             hover_color="#4158D0")
-login_button.place(relx=0.5, rely=0.5, anchor="center")
+            distance_label = ttk.Label(self.root, text=f"Distance: {route.distance} km")
+            distance_label.grid(row=9, column=0, columnspan=2, pady=5)
 
-book_ride_button = CTk.CTkButton(app, text="Book a Ride",
-                                 width=140, height=28,
-                                 corner_radius=150,
-                                 fg_color=("#C850C0","black"),
-                                 hover_color="#4158D0")
-book_ride_button.place(relx=0.5, rely=0.5)
-book_ride_button.pack(pady=20)
+            estimated_time_label = ttk.Label(self.root, text=f"Estimated Time: {self.calculate_estimated_time(route.distance)} minutes")
+            estimated_time_label.grid(row=10, column=0, columnspan=2, pady=5)
+        else:
+            ttk.Label(self.root, text="Route not found. Please check your input.").grid(row=8, column=0, columnspan=2, pady=5)
 
-view_history_button = CTk.CTkButton(app, text="View Drive History",
-                                    width=140,
-                                    height=28,
-                                    corner_radius=150,
-                                    fg_color=("#C850C0","black"),
-                                    hover_color="#4158D0")
-view_history_button.place(relx=0.5, rely=0.5)
-view_history_button.pack(pady=20)
+    def find_route(self, start_point, end_point):
+        for route in self.routes:
+            if route.start_point.name == start_point and route.end_point.name == end_point:
+                return route
+        return None
 
-view_map_button = CTk.CTkButton(app, text="View Map",
-                                width=140,
-                                height=28,
-                                corner_radius=150,
-                                fg_color=("#C850C0","black"),
-                                hover_color="#4158D0")
-view_map_button.place(relx=0.5, rely=0.5)
-view_map_button.pack(pady=20)
+    def calculate_estimated_time(self, distance):
+        # Assuming an average speed of 30 km/h for simplicity
+        average_speed = 30
+        time_in_hours = distance / average_speed
+        time_in_minutes = time_in_hours * 60
+        return int(time_in_minutes)
 
-app.mainloop()
+    def add_access_point(self, name, location):
+        access_point = AccessPoint(name, location)
+        self.access_points[name] = access_point
+
+    def add_route(self, start_point, end_point, distance, vehicle_type, cost):
+        route = Route(
+            self.access_points[start_point],
+            self.access_points[end_point],
+            distance,
+            vehicle_type,
+            cost
+        )
+        self.routes.append(route)
+
+    def logout(self):
+        # Destroy the current window and recreate the login page
+        self.root.destroy()
+        root = tk.Tk()
+        app = TransportationApp(root)
+        root.mainloop()
