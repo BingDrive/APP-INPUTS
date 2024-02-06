@@ -1,67 +1,38 @@
-import tkinter as tk
-from tkinter import ttk
-from datetime import datetime, timedelta
+def create_login_page(self):
+    self.login_frame = ttk.Frame(self.root)
+    self.login_frame.grid(row=0, column=0, padx=20, pady=20)
+    # center the login frame
+    self.root.grid_rowconfigure(0, weight=1)
+    self.root.grid_columnconfigure(0, weight=1)
+    ttk.Label(self.login_frame, text="Login to BingDrive", font=('Helvetica', 16, 'bold')).grid(row=0, column=0,
+                                                                                                columnspan=2, pady=10)
+    tk.Label(self.login_frame, text="Name:").grid(row=1, column=0, sticky=tk.W, pady=5)
+    self.name_entry = ttk.Entry(self.login_frame)
+    self.name_entry.grid(row=1, column=1, pady=5)
 
-class User:
-    def __init__(self, name, level, matric_number, department):
-        self.name = name
-        self.level = level
-        self.matric_number = matric_number
-        self.department = department
+    ttk.Label(self.login_frame, text="Level:").grid(row=2, column=0, sticky=tk.W, pady=5)
+    self.level_entry = ttk.Entry(self.login_frame)
+    self.level_entry.grid(row=2, column=1, pady=5)
 
-    def __str__(self):
-        return f"Name: {self.name}\nLevel: {self.level}\nMatric Number: {self.matric_number}\nDepartment: {self.department}"
+    ttk.Label(self.login_frame, text="Matric Number:").grid(row=3, column=0, sticky=tk.W, pady=5)
+    self.matric_number_entry = ttk.Entry(self.login_frame)
+    self.matric_number_entry.grid(row=3, column=1, pady=5)
 
-class AccessPoint:
-    def __init__(self, name, location):
-        self.name = name
-        self.location = location
+    ttk.Label(self.login_frame, text="Department:").grid(row=4, column=0, sticky=tk.W, pady=5)
+    self.department_entry = ttk.Entry(self.login_frame)
+    self.department_entry.grid(row=4, column=1, pady=5)
 
-    def __str__(self):
-        return f"{self.name} - {self.location}"
+    ttk.Button(self.login_frame, text="Login", command=self.login).grid(row=5, column=0, columnspan=2, pady=10)
 
-class Route:
-    def __init__(self, start_point, end_point, distance, vehicle_type, cost):
-        self.start_point = start_point
-        self.end_point = end_point
-        self.distance = distance
-        self.vehicle_type = vehicle_type
-        self.cost = cost
 
-    def __str__(self):
-        return f"{self.start_point.name} to {self.end_point.name} ({self.distance} km) - {self.vehicle_type} - ${self.cost:.2f}"
-class TransportationApp:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("BingDrive")
+def login(self):
+    name = self.name_entry.get()
+    level = self.level_entry.get()
+    matric_number = self.matric_number_entry.get()
+    department = self.department_entry.get()
 
-        self.current_user = None
-        self.access_points = {}
-        self.routes = []
+    self.current_user = User(name, level, matric_number, department)
 
-        self.selected_start_point = tk.StringVar()
-        self.destination_entry = tk.StringVar()
-
-        self.create_login_page()
-def create_main_app(self):
-    ttk.Label(self.root, text="BingDrive", font=('Helvetica', 16, 'bold')).grid(row=0, column=0, columnspan=2, pady=10)
-
-    ttk.Label(self.root, text=f"Welcome, {self.current_user.name}!", font=('Helvetica', 12)).grid(row=1, column=0,
-                                                                                                  columnspan=2, pady=5)
-
-    # Adding access points
-    self.add_access_point("ICT", "A")
-    self.add_access_point("Clinic", "B")
-    self.add_access_point("Portfolio", "C")
-    self.add_access_point("Chapel", "D")
-    self.add_access_point("Green Plaza", "E")
-    self.add_access_point("Clinic Road", "F")
-    self.add_access_point("Class", "G")
-
-    # Adding routes
-    self.add_route("ICT", "Clinic", 1.5, "Bus", 1.00)
-    self.add_route("Clinic", "Portfolio", 0.8, "Walking", 0.00)
-    self.add_route("Portfolio", "Chapel", 2.0, "Bicycle", 0.50)
-    self.add_route("Chapel", "Green Plaza", 1.0, "Bus", 0.75)
-    self.add_route("Green Plaza", "Clinic Road", 1.2, "Walking", 0.00)
-    self.add_route("Clinic Road", "Class", 1.5, "Bicycle", 0.50)
+    # Destroy the login frame and create the main app window
+    self.login_frame.destroy()
+    self.create_main_app()
